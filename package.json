@@ -1,0 +1,24 @@
+{
+  "name": "music-player",
+  "version": "1.0.0",
+  "description": "Create beautiful UI to play music stored in the \"music folder\" using the HTML5 audio API",
+  "main": "script.js",
+  "scripts": {
+    "start": "live-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlebTanaka/Gruppe2_AV_2021.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GlebTanaka/Gruppe2_AV_2021/issues"
+  },
+  "homepage": "https://github.com/GlebTanaka/Gruppe2_AV_2021#readme",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}
