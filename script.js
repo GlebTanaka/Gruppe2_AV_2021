@@ -20,6 +20,10 @@ const progressContainer2 = document.getElementById('second-progress-container');
 const title2 = document.getElementById('second-title');
 const cover2 = document.getElementById('second-cover');
 
+const querySelector = "i.bi";
+const classPlay = "bi-play-fill";
+const classPause = "bi-pause-fill";
+
 // Song titles
 const songs = ['hey', 'summer', 'ukulele'];
 
@@ -47,32 +51,32 @@ function loadSongSecondPlayer(song) {
 // Play song
 function playSong() {
         musicContainer.classList.add('play');
-        playBtn.querySelector('i.fas').classList.remove('fa-play');
-        playBtn.querySelector('i.fas').classList.add('fa-pause');
+        playBtn.querySelector(querySelector).classList.remove(classPlay);
+        playBtn.querySelector(querySelector).classList.add(classPause);
 
         audio.play();
 }
 
 function playSongSecondPlayer() {
     musicContainer2.classList.add('play');
-    playBtn2.querySelector('i.fas').classList.remove('fa-play');
-    playBtn2.querySelector('i.fas').classList.add('fa-pause');
+    playBtn2.querySelector(querySelector).classList.remove(classPlay);
+    playBtn2.querySelector(querySelector).classList.add(classPause);
 
     audio2.play();
 }
 // Pause song
 function pauseSong() {
     musicContainer.classList.remove('play');
-    playBtn.querySelector('i.fas').classList.add('fa-play');
-    playBtn.querySelector('i.fas').classList.remove('fa-pause');
+    playBtn.querySelector(querySelector).classList.add(classPlay);
+    playBtn.querySelector(querySelector).classList.remove(classPause);
 
     audio.pause();
 }
 
 function pauseSongSecondPlayer() {
     musicContainer2.classList.remove('play');
-    playBtn2.querySelector('i.fas').classList.add('fa-play');
-    playBtn2.querySelector('i.fas').classList.remove('fa-pause');
+    playBtn2.querySelector(querySelector).classList.add(classPlay);
+    playBtn2.querySelector(querySelector).classList.remove(classPause);
 
     audio2.pause();
 }

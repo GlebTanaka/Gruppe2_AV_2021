@@ -8,68 +8,108 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
     />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css" />
     <title>Music Player</title>
   </head>
   <body>
     <h1>Music Player</h1>
 
-    <div class="audio-container" id="audio-container">
-        <div class="music-container" id="music-container">
-            <div class="music-info">
-                <h4 id="title"></h4>
-                <div class="progress-container" id="progress-container">
-                    <div class="progress" id="progress"></div>
-                </div>
-            </div>
-
+    <div class="section" id="audio-container">
+        <div class="container" id="music-container">
             <audio src="music/ukulele.mp3" id="audio"></audio>
-
-            <div class="img-container">
-                <img src="images/ukulele.jpg" alt="music-cover" id="cover" />
+            
+            <div class="inner-container">
+                <div class="img-container">
+                    <img src="images/ukulele.jpg" alt="music-cover" id="cover" />
+                </div>
+                <h2 id="title"></h2>     
             </div>
+
             <div class="navigation">
                 <button id="prev" class="action-btn">
-                    <i class="fas fa-backward"></i>
+                    <i class="bi bi-skip-start-fill"></i>
                 </button>
                 <button id="play" class="action-btn action-btn-big">
-                    <i class="fas fa-play"></i>
+                    <i class="bi bi-play-fill"></i>
                 </button>
                 <button id="next" class="action-btn">
-                    <i class="fas fa-forward"></i>
+                    <i class="bi bi-skip-end-fill"></i>
+                </button>
+            </div>
+
+            <div class="progress-container" id="progress-container">
+                <div class="progress" id="progress"></div>
+            </div>
+
+            <div class="navigation">
+                <button id="eq" class="action-btn">
+                  <i class="bi bi-soundwave"></i>
+                </button>
+                <button id="settings" class="action-btn">
+                  <i class="bi bi-sliders"></i>
+                </button>
+                <button id="link" class="action-btn">
+                  <i class="bi bi-link"></i>
                 </button>
             </div>
         </div>
 
-        <div class="music-container" id="second-music-container">
-            <div class="music-info">
-                <h4 id="second-title"></h4>
-                <div class="progress-container" id="second-progress-container">
-                    <div class="progress" id="second-progress"></div>
-                </div>
-            </div>
-
+        <div class="container" id="second-music-container">
             <audio src="music/ukulele.mp3" id="second-audio"></audio>
-
-            <div class="img-container">
-                <img src="images/ukulele.jpg" alt="music-cover" id="second-cover" />
+            
+            <div class="inner-container">
+                <div class="img-container">
+                    <img src="images/ukulele.jpg" alt="music-cover" id="second-cover" />
+                </div>
+                <h2 id="second-title"></h2>     
             </div>
+
             <div class="navigation">
                 <button id="second-prev" class="action-btn">
-                    <i class="fas fa-backward"></i>
+                    <i class="bi bi-skip-start-fill"></i>
                 </button>
                 <button id="second-play" class="action-btn action-btn-big">
-                    <i class="fas fa-play"></i>
+                    <i class="bi bi-play-fill"></i>
                 </button>
                 <button id="second-next" class="action-btn">
-                    <i class="fas fa-forward"></i>
+                    <i class="bi bi-skip-end-fill"></i>
+                </button>
+            </div>
+
+            <div class="progress-container" id="second-progress-container">
+                <div class="progress" id="second-progress"></div>
+            </div>
+
+            <div class="navigation">
+                <button id="eq" class="action-btn">
+                  <i class="bi bi-soundwave"></i>
+                </button>
+                <button id="settings" class="action-btn">
+                  <i class="bi bi-sliders"></i>
+                </button>
+                <button id="link" class="action-btn">
+                  <i class="bi bi-link"></i>
                 </button>
             </div>
         </div>
-
     </div>
 
-
+    <div class="section">
+        <div class="container">
+            <div class="visualizer inner-container">
+                
+            </div>
+            <div class="navigation">
+                <button class="action-btn action-btn-big">
+                    <i class="bi bi-play-fill"></i>
+                </button>
+            </div>
+            <div class="progress-container">
+                
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
