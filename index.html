@@ -14,8 +14,16 @@
   </head>
   <body>
     <h1>Music Player</h1>
-    <label for="volume">Volume</label>
-    <input type="range" min="0" max="1" value="0.5" step=".01" id="volume">
+    <div class="grid">
+        <label for="volume">Volume</label>
+        <input type="range" min="0" max="1" value="0.5" step=".01" id="volume">
+        <label for="bass">Bass</label>
+        <input type="range" min="-10" max="10" value="0" id="bass">
+        <label for="mid">Mid</label>
+        <input type="range" min="-10" max="10" value="0" id="mid">
+        <label for="treble">Treble</label>
+        <input type="range" min="-10" max="10" value="0" id="treble">
+    </div>
 
     <div class="section" id="audio-container">
         <div class="container" id="music-container-1">

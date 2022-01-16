@@ -1,3 +1,5 @@
+let audioCoding;
+let source;
 class SongContainer {
 	constructor(titleSuffix) {
 		this.musicContainer = document.getElementById('music-container-'+titleSuffix);
@@ -31,6 +33,9 @@ class SongContainer {
 		// Song ends
 		// audio.addEventListener('ended', nextSong);
 
+
+        this.audioSource = document.getElementById('audio');
+
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
         /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas */
@@ -53,18 +58,54 @@ class SongContainer {
 
         // number of data values for the visualization (128)
         this.arrayLength = this.analyzerNode.frequencyBinCount;
+        console.log(this.arrayLength);
         this.dataArray = new Uint8Array(this.arrayLength);
-        // let audioCoding = new AudioBuffer();
+        // let audioCoding;
         // let source;
 
         this.volume = document.getElementById('volume');
+        this.bass = document.getElementById('bass');
+        this.mid = document.getElementById('mid');
+        this.treble = document.getElementById('treble');
 
         /*
          Node, that represents a change in volume.
          https://developer.mozilla.org/en-US/docs/Web/API/GainNode
          */
         this.gain = new GainNode(this.audioCtx, {gain: this.volume.value});
-	}
+        /* https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode */
+        /**
+         * simple low-order filter for boosting lower frequencies.
+         * @type {BiquadFilterNode}
+         */
+        this.bassEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'lowshelf',
+            frequency: this.lowerBandThreshold,
+            gain: this.bass.value
+        });
+
+        /**
+         * simple low-order filter to boost all frequencies, here for mid range.
+         * @type {BiquadFilterNode}
+         */
+        this.midEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'peaking',
+            Q: Math.SQRT1_2,
+            frequency: 1500,
+            gain: this.mid.value
+        });
+
+        /**
+         * simple low-oder filter to boost high frequencies.
+         * @type {BiquadFilterNode}
+         */
+        this.trebleEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'highshelf',
+            frequency: this.higherBandThreshold,
+            gain: this.treble.value
+        });
+
+    }
 
 
 	loadSong(index) {
@@ -72,7 +113,6 @@ class SongContainer {
 		this.source = this.audioCtx.createBufferSource();
 	    let request = new XMLHttpRequest();
 	    let song = this.songs[index];
-        let audioCoding;
 	    request.open('GET', `music/${song}.mp3`, true);
 	    request.responseType = 'arraybuffer';
 	    request.onload = function() {
@@ -106,6 +146,7 @@ class SongContainer {
 
         // copies the current frequency data into 'dataArray' (Uint8Array) passed into it as parameter.
         this.analyzerNode.getByteFrequencyData(this.dataArray)
+        console.log("in dradVisualizer")
         console.log(this.dataArray);
 
         const barWidth = (this.width / this.arrayLength) * 1.82;
@@ -127,12 +168,6 @@ class SongContainer {
 	    this.musicContainer.classList.add('play');
 	    this.playBtn.querySelector(this.querySelector).classList.remove(this.classPlay);
 	    this.playBtn.querySelector(this.querySelector).classList.add(this.classPause);
-
-        // source = audioContext.createBufferSource();
-        // // assign extracted AudioBuffer to source
-        // source.buffer = audioCoding;
-        // this.gain.connect(this.analyzerNode)
-
 	    this.audioCtx.resume();
 	}
 
