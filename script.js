@@ -157,7 +157,7 @@ function setProgressSecondPlayer(e) {
     audio2.currentTime = (clickX / width) * duration;
 }
 
-// Event listeners
+// Event listeners (event targets abfragen)
 // player one play button
 playBtn.addEventListener('click', () => {
     const isPlaying = musicContainer.classList.contains('play');
