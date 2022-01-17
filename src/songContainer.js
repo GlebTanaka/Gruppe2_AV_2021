@@ -8,6 +8,7 @@ class SongContainer {
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
 		this.title = document.getElementById('title-'+titleSuffix);
 		this.cover = document.getElementById('cover-'+titleSuffix);
+		this.audio = document.getElementById('audio-'+titleSuffix);
 
         this.volume = document.getElementById('volume');
         this.bass = document.getElementById('bass');
@@ -29,16 +30,10 @@ class SongContainer {
 		this.prevBtn.addEventListener('click', this.prevSong.bind(this));
 		// next button
 		this.nextBtn.addEventListener('click', this.nextSong.bind(this));
-		// click on progress bar
-		//this.progressContainer.addEventListener('click', this.setProgress.bind(this));
 		// Time/song update
-		//this.audioCtx.addEventListener('timeupdate', this.updateProgress.bind(this));
-		// Song ends
-		// audio.addEventListener('ended', nextSong);
-
-
-
-
+		this.audio.addEventListener('timeupdate', this.updateProgress.bind(this));
+		// Click on progress bar
+		this.progressContainer.addEventListener('click', this.setProgress.bind(this));
 
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
@@ -67,8 +62,6 @@ class SongContainer {
         // this.audioCoding;
         // this.source;
 
-
-
         /*
          Node, that represents a change in volume.
          https://developer.mozilla.org/en-US/docs/Web/API/GainNode
@@ -76,8 +69,6 @@ class SongContainer {
         this.gain = new GainNode(this.audioCtx, {gain: this.volume.value});
         console.log("gain: ");
         console.log(this.gain.gain);
-
-
 
         /* https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode */
         /**
@@ -129,32 +120,17 @@ class SongContainer {
 
 
 	loadSong(index) {
-		if (this.source) this.source.disconnect();
-		this.source = this.audioCtx.createBufferSource();
-	    let request = new XMLHttpRequest();
 	    let song = this.songs[index];
-	    request.open('GET', `music/${song}.mp3`, true);
-	    request.responseType = 'arraybuffer';
-	    request.onload = function() {
-	        this.audioCtx.decodeAudioData(request.response, function(buffer) {
-	            this.source.buffer = buffer;
-                console.log(buffer);
+	    this.audio.src = `music/${song}.mp3`;
+	    this.source = this.audioCtx.createMediaElementSource(this.audio);
 
-                this.source.connect(this.gain);
-                // this.gain.connect(this.analyzerNode);
-                this.gain.connect(this.trebleEqualizer);
-                this.trebleEqualizer.connect(this.bassEqualizer);
-                this.bassEqualizer.connect(this.midEqualizer);
-                this.midEqualizer.connect(this.analyzerNode);
-
-	            this.analyzerNode.connect(this.audioCtx.destination);
-	            this.source.loop = true;
-	        }.bind(this));
-	    }.bind(this);
-	    request.send();
-
-	    this.audioCtx.suspend();
-	    this.source.start(0);
+	    this.source.connect(this.gain);
+        this.gain.connect(this.trebleEqualizer);
+        this.trebleEqualizer.connect(this.bassEqualizer);
+        this.bassEqualizer.connect(this.midEqualizer);
+        this.midEqualizer.connect(this.analyzerNode);
+        this.analyzerNode.connect(this.audioCtx.destination);
+        this.source.loop = true;
 	    this.title.innerText = song;
 	    this.cover.src = `images/${song}.jpg`;
 	}
@@ -166,14 +142,14 @@ class SongContainer {
 	    this.musicContainer.classList.add('play');
 	    this.playBtn.querySelector(this.querySelector).classList.remove(this.classPlay);
 	    this.playBtn.querySelector(this.querySelector).classList.add(this.classPause);
-	    this.audioCtx.resume();
+	    this.audio.play();
 	}
 
 	pauseSong() {
 	    this.musicContainer.classList.remove('play');
 	    this.playBtn.querySelector(this.querySelector).classList.add(this.classPlay);
 	    this.playBtn.querySelector(this.querySelector).classList.remove(this.classPause);
-	    this.audioCtx.suspend();
+	    this.audio.pause();
 	}
 
 	togglePlay() {
@@ -202,16 +178,15 @@ class SongContainer {
 
 	updateProgress(e) {
 	    const {duration, currentTime} = e.srcElement;
-	    console.log(duration, currenttime);
 	    const progressPercent = (currentTime / duration) * 100;
 	    this.progress.style.width = `${progressPercent}%`;
 	}
 
 	setProgress(e) {
-	    const width = this.clientWidth;
+	    const width = this.progressContainer.clientWidth;
 	    const clickX = e.offsetX;
-	    const duration = this.source.buffer.duration;
-	    this.audioCtx.currentTime = (clickX / width) * duration;
+	    const duration = this.audio.duration;
+	    this.audio.currentTime = (clickX / width) * duration;
 	}
 
     changeVolume() {
