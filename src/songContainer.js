@@ -1,11 +1,16 @@
 class SongContainer {
 	constructor(titleSuffix) {
+
 		this.musicContainer = document.getElementById('music-container-'+titleSuffix);
 		this.playBtn = document.getElementById('play-'+titleSuffix);
 		this.prevBtn = document.getElementById('prev-'+titleSuffix);
 		this.nextBtn = document.getElementById('next-'+titleSuffix);
-		this.progress = document.getElementById('progress-'+titleSuffix);
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
+		this.progress = document.getElementById('progress-'+titleSuffix);
+
+		this.querySelector = "i.bi";
+		this.classPlay = "bi-play-fill";
+		this.classPause = "bi-pause-fill";
 
 		this.itemsNavigation = {
 			img:		document.getElementById('img-'+titleSuffix),
@@ -19,22 +24,66 @@ class SongContainer {
 			settings:	document.getElementById('settings-subcontainer-'+titleSuffix),
 			link:		document.getElementById('link-subcontainer-'+titleSuffix)
 		}
+
+		// img subcontainer
 		this.title = document.getElementById('title-'+titleSuffix);
 		this.cover = document.getElementById('cover-'+titleSuffix);
 		this.audio = document.getElementById('audio-'+titleSuffix);
 
+		// eq subcontainer
         this.volume = document.getElementById('volume-'+titleSuffix);
         this.bass = document.getElementById('bass-'+titleSuffix);
         this.mid = document.getElementById('mid-'+titleSuffix);
         this.treble = document.getElementById('treble-'+titleSuffix);
 
+        this.lowerBandThreshold = 500;
+        this.higherBandThreshold = 3000;
+
+        // song data
 		this.audioCtx = new AudioContext();
 		this.songs = ['hey', 'summer', 'ukulele'];
 		this.songIndex = 0;
 
-		this.querySelector = "i.bi";
-		this.classPlay = "bi-play-fill";
-		this.classPause = "bi-pause-fill";
+		// visualizer
+        this.canvas = document.getElementById('visualizer');
+        this.canvasContext = this.canvas.getContext('2d');
+
+        this.width = this.canvas.width;
+        this.height = this.canvas.height;
+
+        this.analyzerNode = new AnalyserNode(this.audioCtx, {
+            fftSize: 256,
+            maxDecibels: -25,
+            minDecibels: -60,
+            smoothingTimeConstant: 0.8
+        });
+        // number of data values for the visualization (128)
+        this.arrayLength = this.analyzerNode.frequencyBinCount;
+        this.dataArray = new Uint8Array(this.arrayLength);
+
+
+        this.lowerBandThreshold = 500;
+        this.higherBandThreshold = 3000;
+
+        this.gain = new GainNode(this.audioCtx, {
+        	gain: this.volume.value
+        });
+        this.bassEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'lowshelf',
+            frequency: this.lowerBandThreshold,
+            gain: this.bass.value
+        });
+        this.midEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'peaking',
+            Q: Math.SQRT1_2,
+            frequency: 1500,
+            gain: this.mid.value
+        });
+        this.trebleEqualizer = new BiquadFilterNode(this.audioCtx, {
+            type: 'highshelf',
+            frequency: this.higherBandThreshold,
+            gain: this.treble.value
+        });
 
 		// Event listeners (event targets abfragen)
 		// play button
@@ -48,97 +97,24 @@ class SongContainer {
 		// Click on progress bar
 		this.progressContainer.addEventListener('click', this.setProgress.bind(this));
 
-        this.lowerBandThreshold = 500;
-        this.higherBandThreshold = 3000;
-        /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas */
-        // Get a canvas defined with ID "visualizer"
-        this.canvas = document.getElementById('visualizer');
-        //"2d", leading to the creation of a CanvasRenderingContext2D object representing a two-dimensional rendering context
-        this.canvasContext = this.canvas.getContext('2d');
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-        /*
-        A node able to provide real-time frequency and time-domain analysis information
-        https://developer.mozilla.org/en-US/docs/Web/API/AudioNode
-        */
-        this.analyzerNode = new AnalyserNode(this.audioCtx, {
-            fftSize: 256,
-            maxDecibels: -25,
-            minDecibels: -60,
-            smoothingTimeConstant: 0.8
+		// change eq sliders
+        this.volume.addEventListener('input', e => {
+            this.gain.gain.value = e.target.value;
         });
-
-        // number of data values for the visualization (128)
-        this.arrayLength = this.analyzerNode.frequencyBinCount;
-        console.log(this.arrayLength);
-        this.dataArray = new Uint8Array(this.arrayLength);
-        // this.audioCoding;
-        // this.source;
-
-        /*
-         Node, that represents a change in volume.
-         https://developer.mozilla.org/en-US/docs/Web/API/GainNode
-         */
-        this.gain = new GainNode(this.audioCtx, {gain: this.volume.value});
-        console.log("gain: ");
-        console.log(this.gain.gain);
-
-        /* https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode */
-        /**
-         * simple low-order filter for boosting lower frequencies.
-         * @type {BiquadFilterNode}
-         */
-        this.bassEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'lowshelf',
-            frequency: this.lowerBandThreshold,
-            gain: this.bass.value
-        });
-
-        /**
-         * simple low-order filter to boost all frequencies, here for mid range.
-         * @type {BiquadFilterNode}
-         */
-        this.midEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'peaking',
-            Q: Math.SQRT1_2,
-            frequency: 1500,
-            gain: this.mid.value
-        });
-
-        /**
-         * simple low-oder filter to boost high frequencies.
-         * @type {BiquadFilterNode}
-         */
-        this.trebleEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'highshelf',
-            frequency: this.higherBandThreshold,
-            gain: this.treble.value
-        });
-
-        this.volume.addEventListener("change", this.changeVolume.bind(this));
-
         this.bass.addEventListener('input', e => {
             this.bassEqualizer.gain.value = parseInt(e.target.value);
         });
-
         this.mid.addEventListener('input', e => {
             this.midEqualizer.gain.value = parseInt(e.target.value);
         });
-
         this.treble.addEventListener('input', e => {
             this.trebleEqualizer.gain.value = parseInt(e.target.value);
         });
 
+        // switch tabs in song container
         for (let selectedItem in this.itemsNavigation) {
         	this.itemsNavigation[selectedItem].addEventListener('click', this.switchSubcontainer.bind(this, selectedItem));
         }
-    }
-
-    switchSubcontainer(selectedItem) {
-    	console.log(selectedItem);
-    	for (let item in this.itemsSubcontainer) {
-    		this.itemsSubcontainer[item].hidden = (item != selectedItem);
-    	}
     }
 
 	loadSong(index) {
@@ -208,8 +184,10 @@ class SongContainer {
 	    this.audio.currentTime = (clickX / width) * duration;
 	}
 
-    changeVolume() {
-        this.gain.gain.value = this.volume.value;
+    switchSubcontainer(selectedItem) {
+    	for (let item in this.itemsSubcontainer) {
+    		this.itemsSubcontainer[item].hidden = (item != selectedItem);
+    	}
     }
 }
 
