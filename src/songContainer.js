@@ -6,6 +6,19 @@ class SongContainer {
 		this.nextBtn = document.getElementById('next-'+titleSuffix);
 		this.progress = document.getElementById('progress-'+titleSuffix);
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
+
+		this.itemsNavigation = {
+			img:		document.getElementById('img-'+titleSuffix),
+			eq:			document.getElementById('eq-'+titleSuffix),
+			settings:	document.getElementById('settings-'+titleSuffix),
+			link:		document.getElementById('link-'+titleSuffix)
+		};
+		this.itemsSubcontainer = {
+			img:		document.getElementById('img-subcontainer-'+titleSuffix),
+			eq:			document.getElementById('eq-subcontainer-'+titleSuffix),
+			settings:	document.getElementById('settings-subcontainer-'+titleSuffix),
+			link:		document.getElementById('link-subcontainer-'+titleSuffix)
+		}
 		this.title = document.getElementById('title-'+titleSuffix);
 		this.cover = document.getElementById('cover-'+titleSuffix);
 		this.audio = document.getElementById('audio-'+titleSuffix);
@@ -116,8 +129,17 @@ class SongContainer {
             this.trebleEqualizer.gain.value = parseInt(e.target.value);
         });
 
+        for (let selectedItem in this.itemsNavigation) {
+        	this.itemsNavigation[selectedItem].addEventListener('click', this.switchSubcontainer.bind(this, selectedItem));
+        }
     }
 
+    switchSubcontainer(selectedItem) {
+    	console.log(selectedItem);
+    	for (let item in this.itemsSubcontainer) {
+    		this.itemsSubcontainer[item].hidden = (item != selectedItem);
+    	}
+    }
 
 	loadSong(index) {
 	    let song = this.songs[index];
@@ -134,9 +156,6 @@ class SongContainer {
 	    this.title.innerText = song;
 	    this.cover.src = `images/${song}.jpg`;
 	}
-
-
-
 
     playSong() {
 	    this.musicContainer.classList.add('play');
