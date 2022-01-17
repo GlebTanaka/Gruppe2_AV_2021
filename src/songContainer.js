@@ -1,5 +1,3 @@
-let audioCoding;
-let source;
 class SongContainer {
 	constructor(titleSuffix) {
 		this.musicContainer = document.getElementById('music-container-'+titleSuffix);
@@ -10,6 +8,11 @@ class SongContainer {
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
 		this.title = document.getElementById('title-'+titleSuffix);
 		this.cover = document.getElementById('cover-'+titleSuffix);
+
+        this.volume = document.getElementById('volume');
+        this.bass = document.getElementById('bass');
+        this.mid = document.getElementById('mid');
+        this.treble = document.getElementById('treble');
 
 		this.audioCtx = new AudioContext();
 		this.songs = ['hey', 'summer', 'ukulele'];
@@ -34,7 +37,8 @@ class SongContainer {
 		// audio.addEventListener('ended', nextSong);
 
 
-        this.audioSource = document.getElementById('audio');
+
+
 
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
@@ -60,19 +64,21 @@ class SongContainer {
         this.arrayLength = this.analyzerNode.frequencyBinCount;
         console.log(this.arrayLength);
         this.dataArray = new Uint8Array(this.arrayLength);
-        // let audioCoding;
-        // let source;
+        // this.audioCoding;
+        // this.source;
 
-        this.volume = document.getElementById('volume');
-        this.bass = document.getElementById('bass');
-        this.mid = document.getElementById('mid');
-        this.treble = document.getElementById('treble');
+
 
         /*
          Node, that represents a change in volume.
          https://developer.mozilla.org/en-US/docs/Web/API/GainNode
          */
         this.gain = new GainNode(this.audioCtx, {gain: this.volume.value});
+        console.log("gain: ");
+        console.log(this.gain.gain);
+
+
+
         /* https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/BiquadFilterNode */
         /**
          * simple low-order filter for boosting lower frequencies.
@@ -105,6 +111,20 @@ class SongContainer {
             gain: this.treble.value
         });
 
+        this.volume.addEventListener("change", this.changeVolume.bind(this));
+
+        this.bass.addEventListener('input', e => {
+            this.bassEqualizer.gain.value = parseInt(e.target.value);
+        });
+
+        this.mid.addEventListener('input', e => {
+            this.midEqualizer.gain.value = parseInt(e.target.value);
+        });
+
+        this.treble.addEventListener('input', e => {
+            this.trebleEqualizer.gain.value = parseInt(e.target.value);
+        });
+
     }
 
 
@@ -119,7 +139,15 @@ class SongContainer {
 	        this.audioCtx.decodeAudioData(request.response, function(buffer) {
 	            this.source.buffer = buffer;
                 console.log(buffer);
-	            this.source.connect(this.audioCtx.destination);
+
+                this.source.connect(this.gain);
+                // this.gain.connect(this.analyzerNode);
+                this.gain.connect(this.trebleEqualizer);
+                this.trebleEqualizer.connect(this.bassEqualizer);
+                this.bassEqualizer.connect(this.midEqualizer);
+                this.midEqualizer.connect(this.analyzerNode);
+
+	            this.analyzerNode.connect(this.audioCtx.destination);
 	            this.source.loop = true;
 	        }.bind(this));
 	    }.bind(this);
@@ -131,37 +159,7 @@ class SongContainer {
 	    this.cover.src = `images/${song}.jpg`;
 	}
 
-    /**
-     * The function to call when it's time to update your animation for the next repaint.
-     * The callback function is passed one single argument
-     */
-    drawVisualizer() {
 
-        /*
-         tells the browser that you wish to perform an animation and requests that the browser calls a
-         specified function to update an animation before the next repaint.
-         The method takes a callback as an argument to be invoked before the repaint.
-         */
-        requestAnimationFrame(this.drawVisualizer)
-
-        // copies the current frequency data into 'dataArray' (Uint8Array) passed into it as parameter.
-        this.analyzerNode.getByteFrequencyData(this.dataArray)
-        console.log("in dradVisualizer")
-        console.log(this.dataArray);
-
-        const barWidth = (this.width / this.arrayLength) * 1.82;
-        let barHeight;
-        let x = 0;
-
-        this.canvasContext.fillStyle = 'rgb(0, 0, 0)';
-        this.canvasContext.fillRect(0, 0, this.width, this.height);
-        this.dataArray.forEach((item, index) => {
-            barHeight = this.dataArray[index];
-            this.canvasContext.fillStyle = 'rgb(' + (barHeight + 100) + ',50,50)';
-            this.canvasContext.fillRect(x, this.height - barHeight / 2, barWidth, barHeight);
-            x += barWidth + 1;
-        });
-    }
 
 
     playSong() {
@@ -215,6 +213,10 @@ class SongContainer {
 	    const duration = this.source.buffer.duration;
 	    this.audioCtx.currentTime = (clickX / width) * duration;
 	}
+
+    changeVolume() {
+        this.gain.gain.value = this.volume.value;
+    }
 }
 
 export default SongContainer;
