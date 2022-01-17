@@ -47,15 +47,20 @@ h2 {
   padding: 10px;
 }
 
+.subcontainer.dim-music {
+  width: 400px;
+  height: 200px;
+}
+
 .img-container img {
-  width: inherit;
-  height: inherit;
+  height: 80%;
+  width: 100%;
   object-fit: contain;
 }
 
 .img-container {
-  width: 150px;
-  margin: 0 75px;
+  height: 100%;
+  width: 100%;
 }
 
 .visualizer {

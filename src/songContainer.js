@@ -23,10 +23,10 @@ class SongContainer {
 		this.cover = document.getElementById('cover-'+titleSuffix);
 		this.audio = document.getElementById('audio-'+titleSuffix);
 
-        this.volume = document.getElementById('volume');
-        this.bass = document.getElementById('bass');
-        this.mid = document.getElementById('mid');
-        this.treble = document.getElementById('treble');
+        this.volume = document.getElementById('volume-'+titleSuffix);
+        this.bass = document.getElementById('bass-'+titleSuffix);
+        this.mid = document.getElementById('mid-'+titleSuffix);
+        this.treble = document.getElementById('treble-'+titleSuffix);
 
 		this.audioCtx = new AudioContext();
 		this.songs = ['hey', 'summer', 'ukulele'];

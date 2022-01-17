@@ -26,20 +26,20 @@
     <div class="container" id="music-container-1">
         <audio id="audio-1"></audio>
 
-        <div class="subcontainer" id="subcontainer-1">
+        <div class="subcontainer dim-music" id="subcontainer-1">
             <div class="img-container" id="img-subcontainer-1">
                 <img src="images/ukulele.jpg" alt="music-cover" id="cover-1"/>
                 <h2 id="title-1"></h2>
             </div>
             <div class="grid" id="eq-subcontainer-1" hidden>
                 <label for="volume">Volume</label>
-                <input type="range" min="0" max="1" value="0.5" step=".01" id="volume">
+                <input type="range" min="0" max="1" value="0.5" step=".01" id="volume-1">
                 <label for="bass">Bass</label>
-                <input type="range" min="-10" max="10" value="0" id="bass">
+                <input type="range" min="-10" max="10" value="0" id="bass-1">
                 <label for="mid">Mid</label>
-                <input type="range" min="-10" max="10" value="0" id="mid">
+                <input type="range" min="-10" max="10" value="0" id="mid-1">
                 <label for="treble">Treble</label>
-                <input type="range" min="-10" max="10" value="0" id="treble">
+                <input type="range" min="-10" max="10" value="0" id="treble-1">
             </div>
             <div id="settings-subcontainer-1" hidden></div>
             <div id="link-subcontainer-1" hidden></div>
@@ -63,7 +63,7 @@
 
         <div class="navigation">
             <button id="img-1" class="action-btn">
-                <i class="bi bi-soundwave"></i>
+                <i class="bi bi-file-music"></i>
             </button>
             <button id="eq-1" class="action-btn">
                 <i class="bi bi-soundwave"></i>
@@ -80,12 +80,21 @@
     <div class="container" id="music-container-2">
         <audio src="music/ukulele.mp3" id="audio-2"></audio>
 
-        <div class="subcontainer" id="subcontainer-2">
+        <div class="subcontainer dim-music" id="subcontainer-2">
             <div class="img-container" id="img-subcontainer-2">
                 <img src="images/ukulele.jpg" alt="music-cover" id="cover-2"/>
                 <h2 id="title-2"></h2>
             </div>
-            <div class="grid" id="eq-subcontainer-2" hidden></div>
+            <div class="grid" id="eq-subcontainer-2" hidden>
+                <label for="volume">Volume</label>
+                <input type="range" min="0" max="1" value="0.5" step=".01" id="volume-2">
+                <label for="bass">Bass</label>
+                <input type="range" min="-10" max="10" value="0" id="bass-2">
+                <label for="mid">Mid</label>
+                <input type="range" min="-10" max="10" value="0" id="mid-2">
+                <label for="treble">Treble</label>
+                <input type="range" min="-10" max="10" value="0" id="treble-2">
+            </div>
             <div id="settings-subcontainer-2" hidden></div>
             <div id="link-subcontainer-2" hidden></div>
         </div>
@@ -108,7 +117,7 @@
 
         <div class="navigation">
             <button id="img-2" class="action-btn">
-                <i class="bi bi-soundwave"></i>
+                <i class="bi bi-file-music"></i>
             </button>
             <button id="eq-2" class="action-btn">
                 <i class="bi bi-soundwave"></i>
@@ -125,10 +134,8 @@
 
 <div class="section">
     <div class="container">
-        <div class="visualizer subcontainer">
-            <div class="canvas-container" id="canvas-container">
-                <canvas id="visualizer" width="610" height="150"></canvas>
-            </div>
+        <div class="subcontainer" id="canvas-container">
+            <canvas id="visualizer" width="610" height="150"></canvas>
         </div>
         <div class="navigation">
             <button class="action-btn action-btn-big">
