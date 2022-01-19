@@ -7,6 +7,7 @@ class SongContainer {
 		this.nextBtn = document.getElementById('next-'+titleSuffix);
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
 		this.progress = document.getElementById('progress-'+titleSuffix);
+		this.globalGain = 0.5;
 
 		this.querySelector = "i.bi";
 		this.classPlay = "bi-play-fill";
@@ -99,7 +100,7 @@ class SongContainer {
 
 		// change eq sliders
         this.volume.addEventListener('input', e => {
-            this.gain.gain.value = e.target.value;
+            this.gain.gain.value = e.target.value * this.globalGain;
         });
         this.bass.addEventListener('input', e => {
             this.bassEqualizer.gain.value = parseInt(e.target.value);
