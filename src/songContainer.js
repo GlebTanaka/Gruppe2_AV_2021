@@ -1,5 +1,5 @@
 class SongContainer {
-	constructor(titleSuffix) {
+	constructor(titleSuffix, audioCtx) {
 
 		this.musicContainer = document.getElementById('music-container-'+titleSuffix);
 		this.playBtn = document.getElementById('play-'+titleSuffix);
@@ -7,7 +7,6 @@ class SongContainer {
 		this.nextBtn = document.getElementById('next-'+titleSuffix);
 		this.progressContainer = document.getElementById('progress-container-'+titleSuffix);
 		this.progress = document.getElementById('progress-'+titleSuffix);
-		this.globalGain = 0.5;
 
 		this.querySelector = "i.bi";
 		this.classPlay = "bi-play-fill";
@@ -37,31 +36,10 @@ class SongContainer {
         this.mid = document.getElementById('mid-'+titleSuffix);
         this.treble = document.getElementById('treble-'+titleSuffix);
 
-        this.lowerBandThreshold = 500;
-        this.higherBandThreshold = 3000;
-
         // song data
-		this.audioCtx = new AudioContext();
+		this.audioCtx = audioCtx;
 		this.songs = ['hey', 'summer', 'ukulele'];
 		this.songIndex = 0;
-
-		// visualizer
-        this.canvas = document.getElementById('visualizer');
-        this.canvasContext = this.canvas.getContext('2d');
-
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
-
-        this.analyzerNode = new AnalyserNode(this.audioCtx, {
-            fftSize: 256,
-            maxDecibels: -25,
-            minDecibels: -60,
-            smoothingTimeConstant: 0.8
-        });
-        // number of data values for the visualization (128)
-        this.arrayLength = this.analyzerNode.frequencyBinCount;
-        this.dataArray = new Uint8Array(this.arrayLength);
-
 
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
@@ -85,6 +63,9 @@ class SongContainer {
             frequency: this.higherBandThreshold,
             gain: this.treble.value
         });
+        this.outputNode = new GainNode(this.audioCtx, {
+        	gain: 1
+        });
 
 		// Event listeners (event targets abfragen)
 		// play button
@@ -100,7 +81,7 @@ class SongContainer {
 
 		// change eq sliders
         this.volume.addEventListener('input', e => {
-            this.gain.gain.value = e.target.value * this.globalGain;
+            this.gain.gain.value = e.target.value;
         });
         this.bass.addEventListener('input', e => {
             this.bassEqualizer.gain.value = parseInt(e.target.value);
@@ -127,8 +108,7 @@ class SongContainer {
         this.gain.connect(this.trebleEqualizer);
         this.trebleEqualizer.connect(this.bassEqualizer);
         this.bassEqualizer.connect(this.midEqualizer);
-        this.midEqualizer.connect(this.analyzerNode);
-        this.analyzerNode.connect(this.audioCtx.destination);
+        this.midEqualizer.connect(this.outputNode);
         this.source.loop = true;
 	    this.title.innerText = song;
 	    this.cover.src = `images/${song}.jpg`;
