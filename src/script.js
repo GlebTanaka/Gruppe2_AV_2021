@@ -6,7 +6,9 @@ const songContainer1 = new SongContainer('1', audioCtx);
 const songContainer2 = new SongContainer('2', audioCtx);
 const visualizer = new Visualizer(
     audioCtx,
-    [songContainer1.outputNode,songContainer2.outputNode]
+    // [songContainer1.outputNode,songContainer2.outputNode]
+
+    [songContainer1,songContainer2]
 );
 
 // Initially load song details into DOM
