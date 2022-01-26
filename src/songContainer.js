@@ -1,5 +1,5 @@
 class SongContainer {
-	constructor(titleSuffix, audioCtx) {
+	constructor(titleSuffix, audioCtx, allSongs) {
 
 		this.musicContainer = document.getElementById('music-container-'+titleSuffix);
 		this.playBtn = document.getElementById('play-'+titleSuffix);
@@ -38,8 +38,9 @@ class SongContainer {
 
         // song data
 		this.audioCtx = audioCtx;
-		this.songs = ['hey', 'summer', 'ukulele'];
+		this.songs = allSongs;
 		this.songIndex = 0;
+		this.createSongs();
 
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
@@ -98,6 +99,40 @@ class SongContainer {
         	this.itemsNavigation[selectedItem].addEventListener('click', this.switchSubcontainer.bind(this, selectedItem));
         }
     }
+
+	createSongs(){
+		this.songs.forEach(song => this.createSongSetting(song));
+	}
+
+	checkBoxSwitch(inputNode, song){
+		if(inputNode.checked){
+			if(!this.songs.includes(song)){
+				this.songs.push(song);
+			}
+		}else{
+			this.songs = this.songs.filter(function(value, index, arr){ 
+				return song != value;
+			});
+		}
+	}
+
+	createSongSetting(song){
+		var node = document.createElement("tr"); 
+		var cellLabel = document.createElement("td");
+		var cellInput = document.createElement("td"); 
+		var labelNode = document.createTextNode(song);
+		var inputNode = document.createElement("input");
+		inputNode.type = "checkbox";
+		inputNode.checked = true;
+		inputNode.addEventListener('change',() =>{ this.checkBoxSwitch(inputNode, song)});
+		
+		cellLabel.appendChild(labelNode);
+		node.appendChild(cellLabel);
+		cellInput.appendChild(inputNode);
+		node.appendChild(cellInput);
+		
+		this.itemsSubcontainer.settings.appendChild(node);
+	}
 
 	loadSong(index) {
 	    let song = this.songs[index];
