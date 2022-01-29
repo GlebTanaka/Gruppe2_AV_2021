@@ -1,5 +1,5 @@
 class Visualizer {
-    constructor(audioCtx, inputNodes) {
+    constructor(audioCtx, songContainers) {
         this.canvas = document.getElementById('visualizer');
         this.slider = document.getElementById("global-slider");
         this.masterPlayBtn = document.getElementById("master-play-btn");
@@ -30,6 +30,7 @@ class Visualizer {
             minDecibels: -60,
             smoothingTimeConstant: 0.8
         });
+        
 
         // number of data values for the visualization (128)
         this.arrayLength = this.analyzerNode1.frequencyBinCount;
@@ -38,24 +39,24 @@ class Visualizer {
         this.bufferLength = this.analyzerNode1.fftSize
         this.dataArrayForSinewave = new Uint8Array(this.bufferLength);
 
-        inputNodes[0].outputNode.connect(this.analyzerNode1);
-        inputNodes[1].outputNode.connect(this.analyzerNode2);
+        songContainers[0].processingGraph.outputNode.connect(this.analyzerNode1);
+        songContainers[1].processingGraph.outputNode.connect(this.analyzerNode2);
         this.analyzerNode1.connect(this.audioCtx.destination);
         this.analyzerNode2.connect(this.audioCtx.destination);
 
         this.slider.addEventListener('input', e => {
-            this.crossFadeVolumeOfTwoSongContainers(inputNodes, e);
+            this.crossFadeVolumeOfTwoSongContainers(songContainers, e);
         });
         this.switchBtn.addEventListener('click', () => {
-            if (this.isAtLeastOneSongContainerPlaying(inputNodes)) {
-                this.switchBetweenSongContainers(inputNodes);
+            if (this.isAtLeastOneSongContainerPlaying(songContainers)) {
+                this.switchBetweenSongContainers(songContainers);
             }
         });
         this.masterPlayBtn.addEventListener('click', () => {
-            if (this.isBothSongContainerNotPlaying(inputNodes)) {
-                this.playAllSongContainer(inputNodes);
-            } else if (this.isOneOfTwoSongContainerPlaying(inputNodes)){
-                this.stopAllSongContainer(inputNodes);
+            if (this.isBothSongContainerNotPlaying(songContainers)) {
+                this.playAllSongContainer(songContainers);
+            } else if (this.isOneOfTwoSongContainerPlaying(songContainers)){
+                this.stopAllSongContainer(songContainers);
             }
         });
         this.toggleVisualisation.addEventListener('click', this.toggleStile.bind(this));
@@ -124,9 +125,9 @@ class Visualizer {
         this.drawVisualizerSinewave(this.analyzerNode2, 'rgba(0,255,0)');
     }
 
-    crossFadeVolumeOfTwoSongContainers(inputNodes, e) {
-        inputNodes[0].outputNode.gain.value = 1 - e.target.value;
-        inputNodes[1].outputNode.gain.value = e.target.value;
+    crossFadeVolumeOfTwoSongContainers(songContainers, e) {
+        songContainers[0].processingGraph.outputNode.gain.value = 1 - e.target.value;
+        songContainers[1].processingGraph.outputNode.gain.value = e.target.value;
     }
 
     toggleStile() {
@@ -140,38 +141,38 @@ class Visualizer {
         }
     }
 
-    stopAllSongContainer(inputNodes) {
+    stopAllSongContainer(songContainers) {
         this.masterPlayBtn.querySelector(this.querySelector).classList.remove(this.classPause);
         this.masterPlayBtn.querySelector(this.querySelector).classList.add(this.classPlay);
-        inputNodes[0].pauseSong();
-        inputNodes[1].pauseSong();
+        songContainers[0].pauseSong();
+        songContainers[1].pauseSong();
     }
 
-    playAllSongContainer(inputNodes) {
+    playAllSongContainer(songContainers) {
         this.masterPlayBtn.querySelector(this.querySelector).classList.remove(this.classPlay);
         this.masterPlayBtn.querySelector(this.querySelector).classList.add(this.classPause);
-        inputNodes[0].playSong();
-        inputNodes[1].playSong();
+        songContainers[0].playSong();
+        songContainers[1].playSong();
     }
 
-    switchBetweenSongContainers(inputNodes) {
-        inputNodes[0].togglePlay();
-        inputNodes[1].togglePlay();
+    switchBetweenSongContainers(songContainers) {
+        songContainers[0].togglePlay();
+        songContainers[1].togglePlay();
     }
 
-    isOneOfTwoSongContainerPlaying(inputNodes) {
-        return inputNodes[0].musicContainer.classList.contains('play')
-            || inputNodes[1].musicContainer.classList.contains('play');
+    isOneOfTwoSongContainerPlaying(songContainers) {
+        return songContainers[0].musicContainer.classList.contains('play')
+            || songContainers[1].musicContainer.classList.contains('play');
     }
 
-    isBothSongContainerNotPlaying(inputNodes) {
-        return !inputNodes[0].musicContainer.classList.contains('play')
-            && !inputNodes[1].musicContainer.classList.contains('play');
+    isBothSongContainerNotPlaying(songContainers) {
+        return !songContainers[0].musicContainer.classList.contains('play')
+            && !songContainers[1].musicContainer.classList.contains('play');
     }
 
-    isAtLeastOneSongContainerPlaying(inputNodes) {
-        return inputNodes[0].musicContainer.classList.contains('play') && !inputNodes[1].musicContainer.classList.contains('play')
-            || !inputNodes[0].musicContainer.classList.contains('play') && inputNodes[1].musicContainer.classList.contains('play');
+    isAtLeastOneSongContainerPlaying(songContainers) {
+        return songContainers[0].musicContainer.classList.contains('play') && !songContainers[1].musicContainer.classList.contains('play')
+            || !songContainers[0].musicContainer.classList.contains('play') && songContainers[1].musicContainer.classList.contains('play');
     }
 }
 

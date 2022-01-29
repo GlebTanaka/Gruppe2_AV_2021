@@ -45,28 +45,7 @@ class SongContainer {
         this.lowerBandThreshold = 500;
         this.higherBandThreshold = 3000;
 
-        this.gain = new GainNode(this.audioCtx, {
-        	gain: this.volume.value
-        });
-        this.bassEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'lowshelf',
-            frequency: this.lowerBandThreshold,
-            gain: this.bass.value
-        });
-        this.midEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'peaking',
-            Q: Math.SQRT1_2,
-            frequency: 1500,
-            gain: this.mid.value
-        });
-        this.trebleEqualizer = new BiquadFilterNode(this.audioCtx, {
-            type: 'highshelf',
-            frequency: this.higherBandThreshold,
-            gain: this.treble.value
-        });
-        this.outputNode = new GainNode(this.audioCtx, {
-        	gain: 1
-        });
+        this.processingGraph = this.initProcessingGraph(audioCtx);
 
 		// Event listeners (event targets abfragen)
 		// play button
@@ -79,20 +58,6 @@ class SongContainer {
 		this.audio.addEventListener('timeupdate', this.updateProgress.bind(this));
 		// Click on progress bar
 		this.progressContainer.addEventListener('click', this.setProgress.bind(this));
-
-		// change eq sliders
-        this.volume.addEventListener('input', e => {
-            this.gain.gain.value = e.target.value;
-        });
-        this.bass.addEventListener('input', e => {
-            this.bassEqualizer.gain.value = parseInt(e.target.value);
-        });
-        this.mid.addEventListener('input', e => {
-            this.midEqualizer.gain.value = parseInt(e.target.value);
-        });
-        this.treble.addEventListener('input', e => {
-            this.trebleEqualizer.gain.value = parseInt(e.target.value);
-        });
 
         // switch tabs in song container
         for (let selectedItem in this.itemsNavigation) {
@@ -134,16 +99,56 @@ class SongContainer {
 		this.itemsSubcontainer.settings.appendChild(node);
 	}
 
+	initProcessingGraph(audioCtx) {
+		let gain = new GainNode(audioCtx, {
+        	gain: this.volume.value
+        });
+        let bassEqualizer = new BiquadFilterNode(audioCtx, {
+        	frequency: this.lowerBandThreshold,
+            gain: this.bass.value,
+            type: 'lowshelf'
+        });
+        let midEqualizer = new BiquadFilterNode(audioCtx, {
+            type: 'peaking',
+            Q: Math.SQRT1_2,
+            frequency: 1500,
+            gain: this.mid.value
+        });
+        let trebleEqualizer = new BiquadFilterNode(audioCtx, {
+            type: 'highshelf',
+            frequency: this.higherBandThreshold,
+            gain: this.treble.value
+        });
+        let outputNode = new GainNode(audioCtx);
+
+        gain.connect(trebleEqualizer);
+        trebleEqualizer.connect(bassEqualizer);
+        bassEqualizer.connect(midEqualizer);
+        midEqualizer.connect(outputNode);
+
+        // change eq sliders
+        this.volume.addEventListener('input', e => {
+            gain.gain.value = e.target.value;
+        });
+        this.bass.addEventListener('input', e => {
+            bassEqualizer.gain.value = parseInt(e.target.value);
+        });
+        this.mid.addEventListener('input', e => {
+            midEqualizer.gain.value = parseInt(e.target.value);
+        });
+        this.treble.addEventListener('input', e => {
+            trebleEqualizer.gain.value = parseInt(e.target.value);
+        });
+        return {gain,bassEqualizer,midEqualizer,trebleEqualizer,outputNode};
+	}
+
 	loadSong(index) {
 	    let song = this.songs[index];
 	    this.audio.src = `music/${song}.mp3`;
+	    if (this.source != null)
+	    	this.source.disconnect(this.processingGraph.gain);
 	    this.source = this.audioCtx.createMediaElementSource(this.audio);
-
-	    this.source.connect(this.gain);
-        this.gain.connect(this.trebleEqualizer);
-        this.trebleEqualizer.connect(this.bassEqualizer);
-        this.bassEqualizer.connect(this.midEqualizer);
-        this.midEqualizer.connect(this.outputNode);
+	    this.source.connect(this.processingGraph.gain);
         this.source.loop = true;
 	    this.title.innerText = song;
 	    this.cover.src = `images/${song}.jpg`;
