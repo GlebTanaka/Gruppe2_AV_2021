@@ -2,7 +2,7 @@ import SongContainer from './songContainer.js';
 import Visualizer from './visualizer.js';
 import SongDownloader from './songDownloader.js';
 
-const allSongs = ['hey', 'summer', 'ukulele'];
+const allSongs = ['hey', 'summer', 'ukulele', 'white noise'];
 const audioCtx = new AudioContext();
 const songContainer1 = new SongContainer('1', audioCtx, allSongs);
 const songContainer2 = new SongContainer('2', audioCtx, allSongs);
