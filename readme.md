@@ -54,12 +54,12 @@ Durch Anklicken der Checkbox-Elemente ist es möglich nur bestimmte Songs auszuw
 ### 2 Master-Controller / Visualizer
 ![Master-Controller](./readme-files/master-controller.png)
 
-Der Master-Controller besteht aus einem `1` [Visulizer](#22-visulizer), `2` aus einem [Silder](#23-silder) und `3` aus einem [Menü](#21-visulizer-menu).
+Der Master-Controller besteht aus einem `1` [Visualizer](#22-visualizer), `2` aus einem [Silder](#23-silder) und `3` aus einem [Menü](#21-visualizer-menu).
 
 #### 2.1 Visualizer-Menü
 ![Visualizer-Menü](./readme-files/visualizer-menu.png)
 
-Das Visualizer-Menü besteht aus 4 Knöpfen. `1` ermöglicht es, wenn nur einer der beiden [Player](#1-music-player) spielt zwischen diesen zu Wechseln. `2` ermöglicht es beide [Musik-Player](#1-music-player) gleichzeitig zu starten und zu stoppen. `3` ändert die Anzeigeart im [Visulizer](#22-visulizer), wenn der Kreis sich links befindet ist die Darstellung mit Balken ausgewählt, amsonsten als Sinus-Schwingung. `4` erlauabt es beide Songs gemischt als .wav-Datei herunterzuladen.
+Das Visualizer-Menü besteht aus 4 Knöpfen. `1` ermöglicht es, wenn nur einer der beiden [Player](#1-music-player) spielt zwischen diesen zu wechseln. `2` ermöglicht es beide [Musik-Player](#1-music-player) gleichzeitig zu starten und zu stoppen. `3` ändert die Anzeigeart im [Visualizer](#22-visualizer), wenn der Kreis sich links befindet ist die Darstellung mit Balken ausgewählt, amsonsten als Sinus-Schwingung. `4` erlauabt es beide Songs samt Manipulationen als .wav-Datei herunterzuladen.
 
 #### 2.2 Visualizer
 ![Schwingung](./readme-files/schwingung.png)
