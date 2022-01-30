@@ -36,6 +36,12 @@ class SongContainer {
         this.mid = document.getElementById('mid-'+titleSuffix);
         this.treble = document.getElementById('treble-'+titleSuffix);
 
+        // settings subcontainer
+        this.bpmOld = document.getElementById('bpm-old-'+titleSuffix);
+        this.bpmNew = document.getElementById('bpm-new-'+titleSuffix);
+        this.bpmOld.value = '';
+        this.bpmNew.value = '';
+
         // song data
 		this.audioCtx = audioCtx;
 		this.songs = allSongs;
@@ -59,10 +65,29 @@ class SongContainer {
 		// Click on progress bar
 		this.progressContainer.addEventListener('click', this.setProgress.bind(this));
 
+		// update bpm values
+		this.bpmOldValue = -1;
+		this.bpmNewValue = -1;
+		this.bpmOld.addEventListener('input', e => {
+			this.bpmOldValue = e.target.value;
+		})
+		this.bpmNew.addEventListener('input', e => {
+			if (this.bpmOldValue > 0) {
+				this.bpmNewValue = e.target.value / this.bpmOldValue;
+				this.updateBpm();
+			}
+		})
+
         // switch tabs in song container
         for (let selectedItem in this.itemsNavigation) {
         	this.itemsNavigation[selectedItem].addEventListener('click', this.switchSubcontainer.bind(this, selectedItem));
         }
+    }
+
+    updateBpm() {
+    	if (this.bpmNewValue > 0) {
+    		this.audio.playbackRate = this.bpmNewValue;
+    	}
     }
 
 	createSongs(){
@@ -96,7 +121,7 @@ class SongContainer {
 		cellInput.appendChild(inputNode);
 		node.appendChild(cellInput);
 		
-		this.itemsSubcontainer.settings.appendChild(node);
+		this.itemsSubcontainer.link.appendChild(node);
 	}
 
 	initProcessingGraph(audioCtx) {
@@ -145,6 +170,7 @@ class SongContainer {
 	loadSong(index) {
 	    let song = this.songs[index];
 	    this.audio.src = `music/${song}.mp3`;
+	    this.updateBpm();
 	    if (this.source != null)
 	    	this.source.disconnect(this.processingGraph.gain);
 	    this.source = this.audioCtx.createMediaElementSource(this.audio);
