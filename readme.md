@@ -79,8 +79,7 @@ npm install
 npm start
 ```
 
-## Technologienen
-
+## Technologien
 - [JavaScript](https://developer.mozilla.org/de/docs/Web/JavaScript)
 - [HTML](https://developer.mozilla.org/de/docs/Web/HTML)
 - [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API)
@@ -91,8 +90,7 @@ npm start
 - Eduard Weber 566430
 
 ## Quellen
-
-https://github.com/bradtraversy/vanillawebprojects/tree/master/music-player  
-https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css  
-https://www.russellgood.com/how-to-convert-audiobuffer-to-audio-file  
-https://github.com/mdn/voice-change-o-matic/blob/gh-pages/scripts/app.js#L128-L205
+- https://github.com/bradtraversy/vanillawebprojects/tree/master/music-player  
+- https://css-tricks.com/styling-cross-browser-compatible-range-inputs-css  
+- https://www.russellgood.com/how-to-convert-audiobuffer-to-audio-file  
+- https://github.com/mdn/voice-change-o-matic/blob/gh-pages/scripts/app.js#L128-L205
