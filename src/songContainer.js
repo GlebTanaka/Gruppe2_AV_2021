@@ -41,6 +41,8 @@ class SongContainer {
         this.bpmNew = document.getElementById('bpm-new-'+titleSuffix);
         this.bpmOld.value = '';
         this.bpmNew.value = '';
+        this.preservePitch = document.getElementById('preserve-pitch-'+titleSuffix);
+        this.preservePitch.checked = false;
 
         // song data
 		this.audioCtx = audioCtx;
@@ -68,14 +70,20 @@ class SongContainer {
 		// update bpm values
 		this.bpmOldValue = -1;
 		this.bpmNewValue = -1;
+		this.preservePitchValue = false;
 		this.bpmOld.addEventListener('input', e => {
 			this.bpmOldValue = e.target.value;
+			this.updateBpm();
 		})
 		this.bpmNew.addEventListener('input', e => {
 			if (this.bpmOldValue > 0) {
 				this.bpmNewValue = e.target.value / this.bpmOldValue;
 				this.updateBpm();
 			}
+		})
+		this.preservePitch.addEventListener('change', e => {
+			this.preservePitchValue = this.preservePitch.checked;
+			this.updateBpm();
 		})
 
         // switch tabs in song container
@@ -87,6 +95,9 @@ class SongContainer {
     updateBpm() {
     	if (this.bpmNewValue > 0) {
     		this.audio.playbackRate = this.bpmNewValue;
+    		this.audio.preservesPitch = this.preservePitchValue;
+    		this.audio.mozPreservesPitch = this.preservePitchValue;
+    		this.audio.webkitPreservesPitch = this.preservePitchValue;
     	}
     }
 

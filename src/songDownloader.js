@@ -31,6 +31,9 @@ class SongDownloader {
     	await this.loadSourceBuffer(0);
     	await this.loadSourceBuffer(1);
 
+        this.sourceBuffers[0].playbackRate.value = this.songContainers[0].bpmNewValue;
+        this.sourceBuffers[1].playbackRate.value = this.songContainers[1].bpmNewValue;
+
     	this.offlineCtx.startRendering().then(function(buffer) {
     		let blob = bufferToWave(buffer, buffer.length);
         	this.downloadURI(URL.createObjectURL(blob), "mashup.wav");
