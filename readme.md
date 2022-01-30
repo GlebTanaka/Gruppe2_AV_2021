@@ -1,6 +1,8 @@
 # Music Player
 > Ein Projekt um simple Musik zu mixen, zu filtern, zu visualisieren und herunterzuladen.
 
+GitHub-Link: https://github.com/GlebTanaka/Gruppe2_AV_2021
+
 ## Inhaltsverzeichnis
 * [Beschreibung](#beschreibung)
 * [Features](#features)
